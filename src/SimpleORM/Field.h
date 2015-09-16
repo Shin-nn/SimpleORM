@@ -1,22 +1,28 @@
-#ifndef DB_FIELD_H_
-#define DB_FIELD_H_
+#ifndef SIMPLEORM_FIELD_H_
+#define SIMPLEORM_FIELD_H_
 
-#include "WherePart.h"
+#include "Expression.h"
 
 #include <ostream>
 #include <iostream>
 
 namespace SimpleORM
 {
-	class AField
+	class Field
 	{
+		public:
+			inline virtual bool isChanged() final { return changed; }
+			virtual ~Field() {}
+
+		protected:
+			bool changed=0;
 	};
 
 	template <typename T>
-	class Field : public AField
+	class ParametricField : public Field
 	{
 		public:
-			inline Field& operator=(const T& _v) {
+			inline ParametricField& operator=(const T& _v) {
 				if(val!=_v)
 					changed=1;
 
@@ -26,43 +32,49 @@ namespace SimpleORM
 
 			inline const T& value() const { return val; }
 
-			inline bool isChanged() { return changed; }
 		protected:
 			T val = T();
-			bool changed=0;
 		private:
 	};
+
 	template <typename T>
-	std::ostream & operator<<(std::ostream& os, const Field<T> &o) { os<< o.value(); return os; }
+	std::ostream & operator<<(std::ostream& os, const ParametricField<T> &o) { os<< o.value(); return os; }
 
-	class StringField: public Field<std::string>
+	class StringField: public ParametricField<std::string>
 	{
+		public:
+			using ParametricField::operator=;
+		protected:
+		private:
 	};
 
-	class IntField: public Field<int>
+	class IntField: public ParametricField<int>
 	{
+		public:
+			using ParametricField::operator=;
 	};
 
+	template <typename t>
 	class ReferenceField: public IntField
 	{
 	};
 
-	class AFieldDefinition
+	class FieldDefinition
 	{
 		public:
-			AFieldDefinition(const std::string& tn, const std::string &fn) : tableName(tn), fieldName(fn) {}
-
+			FieldDefinition(const std::string& tn, const std::string &fn) : tableName(tn), fieldName(fn) {}
 		protected:
 			std::string tableName;
 			std::string fieldName;
 	};
 
 	template <typename T>
-	class FieldDefinition: public AFieldDefinition
+	class ParametricFieldDefinition: public FieldDefinition
 	{
 		public:
-			inline FieldDefinition<T>(const std::string& _fieldName, const std::string& _tableName) : AFieldDefinition(_tableName,_fieldName) {}
-			Where::Is operator==(const T is) const { return Where::Is(this->fieldName,is); }
+			inline ParametricFieldDefinition<T>(const std::string& _fieldName, const std::string& _tableName) : FieldDefinition(_tableName,_fieldName) {}
+
+			Expression::Is<T> operator==(const T& is) const { return Expression::Is<T>(this->fieldName,is); }
 		private:
 	};
 }

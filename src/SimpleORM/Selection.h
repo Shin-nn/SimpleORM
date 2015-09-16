@@ -2,7 +2,7 @@
 #define DB_SELECTION_H_
 
 #include "Connection.h"
-#include "WherePart.h"
+#include "Expression.h"
 
 #include <iostream>
 
@@ -17,13 +17,9 @@ namespace SimpleORM
 	class Select
 	{
 		public:
-			Select<T> (Connection &c): connection(c)
+			Select<T> (Connection &c,const Expression::Expression &where): connection(c)
 			{
-			}
-			Select<T>& where(const Where::Where& W)
-			{
-				std::cout << W.toStr();
-				return *this;
+				connection.select(T::rows,T::TableName,where);
 			}
 
 			Set<T> select() { return Set<T>(); };

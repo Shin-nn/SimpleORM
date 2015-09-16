@@ -1,10 +1,19 @@
 include ./Makefile.const
 
-.PHONY: all db
+.PHONY: all
 
-all: test
+LIBS=src/Expression.o
 
-LINKS=-lsqlite3
+all: libsimpleorm.so libsimpleorm.a
+
+libsimpleorm.so: $(LIBS)
+	$(CXX) -shared $(CXXFLAGS) -o $@ $^
+
+libsimpleorm.a: $(LIBS)
+	$(AR) $(ARFLAGS) $@ $^
+
+src/Expression.o: src/Expression.cpp src/SimpleORM/Expression.h
+	$(CXX) $(CXXFLAGS) $(OPTIMALIZATION) -c $< -o $@
 
 test:
 	make -C tests
@@ -13,5 +22,5 @@ documentation:
 	doxygen
 
 clean:
-	@rm -f ./src/*.o
+	@rm -f ./src/*.o libsimpleorm.a libsimpleorm.so
 	@echo "Cleaned ..."

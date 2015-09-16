@@ -19,8 +19,8 @@ namespace SimpleORM
 
 			virtual Connection::Values getAllUpdates() = 0;
 
-			virtual Where::Is getPrimaryWhere()=0;
-			
+			virtual void getFromDB(const Row&)=0;
+
 			inline virtual void save() final
 			{
 				auto updates = getAllUpdates();

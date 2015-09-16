@@ -1,12 +1,17 @@
 include ../Makefile.const
 
-TESTS=db-001
+TESTS=expr-001 db-001
 
-all: | build $(TESTS)
-	@for i in $(TESTS); do echo "$$i - "; done;
+.PHONY: clean
 
-build:
-	make -C ../ 
+all: | $(TESTS)
 
-db-001: db-001.cpp ../src/*
+test: all
+	@for i in $(TESTS); do echo "$$i - TODO"; done;
+
+clean:
+	@rm -f $(TESTS)
+	@echo "Cleaned..."
+
+%: %.cpp ../src/*
 	$(CXX) $(CXXFLAGS) $(OPTIMALIZATION) -o $@ $< $ -lsqlite3 -I../src/
