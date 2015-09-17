@@ -47,7 +47,11 @@ namespace SimpleORM
 			{
 				public:
 					SQLiteRow(sqlite3_stmt *st) :statement(st) {};
-					~SQLiteRow() {}
+
+					SQLiteRow(const SQLiteRow&) = delete;
+					SQLiteRow& operator=(const SimpleORM::SQLite::SQLiteRow&) = delete;
+
+					virtual ~SQLiteRow() {}
 					virtual int getInt(size_t row) const override
 					{
 						return sqlite3_column_int64(statement,row);

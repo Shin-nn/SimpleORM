@@ -23,7 +23,7 @@ namespace SimpleORM
 
 			Set<T> select() {
 				Set<T> tmp;
-				connection.select(T::rows,T::TableName,sql,values,[&tmp,this](const Row&r){
+				connection.select(T::collumns,T::TableName,sql,values,[&tmp,this](const Row&r){
 					T tt(connection);
 					tt.getFromDB(r);
 					tmp.push_back(tt);

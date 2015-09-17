@@ -34,7 +34,7 @@ class Login: public SimpleORM::Table<Login>
 			return Where::id == id.value();
 		};
 
-		const static std::vector<std::string> rows;
+		const static std::vector<std::string> collumns;
 
 		inline virtual void getFromDB(const SimpleORM::Row& row) override
 		{
@@ -46,7 +46,7 @@ class Login: public SimpleORM::Table<Login>
 
 };
 
-const std::vector<std::string> Login::rows = std::vector<std::string>({"id","user","login","password"});
+const std::vector<std::string> Login::collumns = std::vector<std::string>({"id","user","login","password"});
 const std::string Login::TableName="Logins";
 const SimpleORM::ParametricFieldDefinition<int> Login::Where::id("id",TableName);
 const SimpleORM::ReferenceFieldDefinition<User> Login::Where::user("user",TableName);
