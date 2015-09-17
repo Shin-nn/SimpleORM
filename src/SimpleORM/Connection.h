@@ -4,9 +4,11 @@
 #include "Exception.h"
 #include "Row.h"
 #include "Field.h"
+#include "Value.h"
 
 #include <string>
 #include <sqlite3.h> 
+#include <functional>
 
 
 namespace SimpleORM
@@ -31,7 +33,9 @@ namespace SimpleORM
 
 			typedef std::vector<std::pair<const Field&, const FieldDefinition&>> Values;
 
-			virtual void select(const std::vector<std::string>& cols, const std::string& table,const Expression::Expression& where) =0;
+			virtual void select(const std::vector<std::string>& cols, const std::string& table,const std::string &sql, const std::vector<std::shared_ptr<ValueHandler>>& values,
+				std::function<void(const Row&)>
+			) =0;
 			virtual void update(const Values&)=0;
 			virtual void insert(const Values&)=0;
 
@@ -58,6 +62,7 @@ namespace SimpleORM
 				protected:
 					sqlite3_stmt *statement;
 			};
+
 			inline SQLite(const std::string& file): fileName(file)
 			{
 				if(sqlite3_open(fileName.c_str(), &db)!=0)
@@ -83,11 +88,10 @@ namespace SimpleORM
 					sqlite3_bind_text(statement,where,tmp.c_str(),tmp.length(),nullptr);
 				}else
 				{
-					throw "ERR";
+					throw ConnectionException("ERR");
 				}
 			}
-
-			virtual void select(const std::vector<std::string>& cols, const std::string& table,const Expression::Expression& where) override
+			virtual void select(const std::vector<std::string>& cols, const std::string& table,const std::string &sql, const std::vector<std::shared_ptr<ValueHandler>>& values,std::function<void(const Row&)> r) override
 			{
 				std::string colsStr;
 				for(auto a= cols.begin();a<cols.end();++a)
@@ -96,7 +100,7 @@ namespace SimpleORM
 					if(a+1 != cols.end())
 						colsStr+=", ";
 				}
-				std::string query ="SELECT "+colsStr+" FROM " + table + " WHERE "+where.sql();
+				std::string query ="SELECT "+colsStr+" FROM " + table + " WHERE "+sql;
 				sqlite3_stmt *statement;
 				if(sqlite3_prepare(db,query.c_str(),query.length(),&statement,0) != SQLITE_OK)
 				{
@@ -104,14 +108,16 @@ namespace SimpleORM
 				}
 
 				int counter=1;
-				for(const auto& val: where.values())
+				for(const auto& val: values)
 				{
-					bind(val,counter,statement);
+					bind(val.get(),counter,statement);
 					counter++;
 				}
 
+				SQLiteRow row(statement);
 				while(sqlite3_step(statement)==SQLITE_ROW)
 				{
+					r(row);
 					//TODO fetch
 				}
 

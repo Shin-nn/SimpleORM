@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace SimpleORM
 {
@@ -14,7 +15,7 @@ namespace Expression
 		class Expression {
 			public:
 				virtual std::string sql() const { return "1=1"; }
-				virtual std::vector<ValueHandler*> values() const { return std::vector<ValueHandler*>(); };
+				virtual std::vector<std::shared_ptr<ValueHandler>> values() const { return std::vector<std::shared_ptr<ValueHandler>>(); };
 				virtual ~Expression() {}
 		};
 
@@ -24,9 +25,9 @@ namespace Expression
 			public:
 				inline Is(const std::string& _field, const T& _value): field(_field),val(_value) {}
 				inline virtual std::string sql() const override{ return field+"=?"; }
-				inline virtual std::vector<ValueHandler*> values() const override {
-					std::vector<ValueHandler*> a;
-					a.push_back((ValueHandler*)(&val));
+				inline virtual std::vector<std::shared_ptr<ValueHandler>> values() const override {
+					std::vector<std::shared_ptr<ValueHandler>> a;
+					a.push_back(std::shared_ptr<ValueHandler>(new Value<T>(val)));
 					return a;
 				}
 
@@ -40,11 +41,10 @@ namespace Expression
 			public:
 				inline TwoExpression(const std::string &_op,const Expression& _l, const Expression& _r):Expression(), op(_op), l(_l), r(_r) {}
 				inline virtual std::string sql() const override { return "("+l.sql()+") "+op+" ("+(&r)->sql()+")"; }
-				inline virtual std::vector<ValueHandler*> values() const override {
-					std::vector<ValueHandler*> ret =l.values();
-					std::vector<ValueHandler*> tmp =r.values();
-					ret.insert(ret.end(),tmp.begin(),tmp.end());
-					return ret;
+				inline virtual std::vector<std::shared_ptr<ValueHandler>> values() const override {
+					std::vector<std::shared_ptr<ValueHandler>> tmp =l.values();
+					tmp.insert(r.values().end(), r.values().begin(), r.values().end());
+					return tmp;
 				}
 			protected:
 				const std::string op;
