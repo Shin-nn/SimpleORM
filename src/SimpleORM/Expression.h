@@ -43,7 +43,10 @@ namespace Expression
 				inline virtual std::string sql() const override { return "("+l.sql()+") "+op+" ("+(&r)->sql()+")"; }
 				inline virtual std::vector<std::shared_ptr<ValueHandler>> values() const override {
 					std::vector<std::shared_ptr<ValueHandler>> tmp =l.values();
-					tmp.insert(r.values().end(), r.values().begin(), r.values().end());
+					for(const auto& a: r.values())
+					{
+						tmp.push_back(a);
+					}
 					return tmp;
 				}
 			protected:
