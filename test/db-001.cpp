@@ -16,32 +16,30 @@ class User: public SimpleORM::Table<User>
 		class Where
 		{
 			public:
-				const static SimpleORM::ParametricFieldDefinition<std::string> name;
 				const static SimpleORM::ParametricFieldDefinition<std::string> username;
 				const static SimpleORM::ParametricFieldDefinition<int> id;
 		};
 
-		SimpleORM::StringField name =  SimpleORM::StringField();
 		SimpleORM::StringField username =  SimpleORM::StringField();
 		SimpleORM::IntField id = SimpleORM::IntField();
 
-		virtual SimpleORM::Expression::Is<std::string> getPrimaryWhere()
+		virtual SimpleORM::Expression::Is<int> getPrimaryWhere()
 		{
-			return Where::name == "TODO";//id.value();
+			return Where::id == id.value();
 		};
 
 		const static std::vector<std::string> rows;
 
 		inline virtual void getFromDB(const SimpleORM::Row& row) override
 		{
-			id=row.getInt(1);
-			username=row.getString(2);
+			id=row.getInt(0);
+			username=row.getString(1);
 		}
 
 		virtual SimpleORM::Connection::Values getAllUpdates() override
 		{
 			SimpleORM::Connection::Values changes;
-			if(name.isChanged())
+			if(username.isChanged())
 			{
 //				changes.push_back(std::make_pair<const SimpleORM::Field&,const SimpleORM::FieldDefinition&>(name,Where::name));
 			}
@@ -51,7 +49,6 @@ class User: public SimpleORM::Table<User>
 
 const std::vector<std::string> User::rows = std::vector<std::string>({"id","username"});
 const std::string User::TableName="Users";
-const SimpleORM::ParametricFieldDefinition<std::string> User::Where::name("name",TableName);
 const SimpleORM::ParametricFieldDefinition<std::string> User::Where::username("username",TableName);
 const SimpleORM::ParametricFieldDefinition<int> User::Where::id("id",TableName);
 
@@ -67,7 +64,10 @@ int main()
 
 	//SimpleORM::Result<User> queryResult=SimpleORM::Select<User> userSelection(*c,User::Where::name=="5");
 	SimpleORM::Select<User> userSelection(*c,User::Where::username=="default");
-	userSelection.select();
+	User ret = userSelection.first();
+	std::cout << "name: " << ret.username << "\n";
+	std::cout << "id: " << ret.id; 
+	
 
 //	std::cout << s.toStr();
 
@@ -78,8 +78,8 @@ int main()
 //.w	here(U::name=="5");
 
 	User test(*c);
-	test.name ="newName";
-	std::cout << test.name;
+	test.username ="newName";
+	std::cout << test.username;
 	test.save();
 
 	delete c;

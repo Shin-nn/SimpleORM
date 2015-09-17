@@ -9,7 +9,7 @@
 namespace SimpleORM
 {
 	template <typename T>
-	class Set
+	class Set : public std::vector<T>
 	{
 	};
 
@@ -17,13 +17,24 @@ namespace SimpleORM
 	class Select
 	{
 		public:
-			Select<T> (Connection &c,const Expression::Expression &where): connection(c)
+			Select<T> (Connection &c,const Expression::Expression &where): values(where.values()),sql(where.sql()), tableName(T::TableName),connection(c)
 			{
-				connection.select(T::rows,T::TableName,where);
 			}
 
-			Set<T> select() { return Set<T>(); };
+			Set<T> select() {
+				Set<T> tmp;
+				connection.select(T::rows,T::TableName,sql,values,[&tmp,this](const Row&r){
+					T tt(connection);
+					tt.getFromDB(r);
+					tmp.push_back(tt);
+					});
+				return tmp;
+			};
+			inline T first() { return select().at(0); }
 		protected:
+			std::vector<std::shared_ptr<ValueHandler>> values;
+			std::string sql;
+			const std::string& tableName;
 			Connection &connection;
 
 	};
