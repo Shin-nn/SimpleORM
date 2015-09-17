@@ -41,12 +41,10 @@ namespace Expression
 				inline TwoExpression(const std::string &_op,const Expression& _l, const Expression& _r):Expression(), op(_op), l(_l), r(_r) {}
 				inline virtual std::string sql() const override { return "("+l.sql()+") "+op+" ("+(&r)->sql()+")"; }
 				inline virtual std::vector<ValueHandler*> values() const override {
-					std::vector<ValueHandler*> tmp =l.values();
-					for(const auto &a:r.values())
-					{
-						tmp.push_back(a);
-					}
-					return tmp;
+					std::vector<ValueHandler*> ret =l.values();
+					std::vector<ValueHandler*> tmp =r.values();
+					ret.insert(ret.end(),tmp.begin(),tmp.end());
+					return ret;
 				}
 			protected:
 				const std::string op;
