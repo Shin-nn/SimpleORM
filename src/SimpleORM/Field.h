@@ -2,6 +2,8 @@
 #define SIMPLEORM_FIELD_H_
 
 #include "Expression.h"
+#include "Connection.h"
+#include "Selection.h"
 
 #include <ostream>
 #include <iostream>
@@ -54,9 +56,33 @@ namespace SimpleORM
 			using ParametricField::operator=;
 	};
 
-	template <typename t>
-	class ReferenceField: public IntField
+	template <typename T>
+	class ReferenceField: public Field
 	{
+		public:
+			ReferenceField<T>(Connection &c):connection(c) {}
+			inline ReferenceField<T>& operator=(int _v) {
+				if(val!=_v)
+					changed=1;
+
+				val=_v;
+				return *this;
+			}
+			inline ReferenceField<T>& operator=(const T& _v) {
+				if(val!=_v.id)
+					changed=1;
+
+				val=_v;
+				return *this;
+			}
+
+			inline T value() const
+			{
+				return SimpleORM::Select<T>(connection,T::Where::id==val).first();
+			}
+		protected:
+			int val=0;
+			Connection &connection;
 	};
 
 	class FieldDefinition
@@ -75,6 +101,16 @@ namespace SimpleORM
 			inline ParametricFieldDefinition<T>(const std::string& _fieldName, const std::string& _tableName) : FieldDefinition(_tableName,_fieldName) {}
 
 			Expression::Is<T> operator==(const T& is) const { return Expression::Is<T>(this->fieldName,is); }
+		private:
+	};
+
+	template <typename T>
+	class ReferenceFieldDefinition: public FieldDefinition
+	{
+		public:
+			inline ReferenceFieldDefinition<T>(const std::string& _fieldName, const std::string& _tableName) : FieldDefinition(_tableName,_fieldName) {}
+
+			Expression::Is<int> operator==(const T& is) const { return Expression::Is<int>(this->fieldName,is.id.value()); }
 		private:
 	};
 }

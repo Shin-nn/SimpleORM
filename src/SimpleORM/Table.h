@@ -17,13 +17,13 @@ namespace SimpleORM
 
 			inline virtual bool isInDatabase() { return 0; }
 
-			virtual Connection::Values getAllUpdates() = 0;
+			//virtual Connection::Values getAllUpdates() = 0;
 
 			virtual void getFromDB(const Row&)=0;
 
 			inline virtual void save() final
 			{
-				auto updates = getAllUpdates();
+/*				auto updates = getAllUpdates();
 				if(isInDatabase())
 				{
 					connection.update(updates);
@@ -31,7 +31,7 @@ namespace SimpleORM
 				{
 					connection.insert(updates);
 				}
-			};
+*/			};
 
 		protected:
 			Connection &connection;

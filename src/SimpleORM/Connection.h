@@ -3,12 +3,12 @@
 
 #include "Exception.h"
 #include "Row.h"
-#include "Field.h"
 #include "Value.h"
 
 #include <string>
 #include <sqlite3.h> 
 #include <functional>
+#include <memory>
 
 
 namespace SimpleORM
@@ -31,13 +31,9 @@ namespace SimpleORM
 			Connection(const Connection&) =delete;
 			void operator=(const Connection&) =delete;
 
-			typedef std::vector<std::pair<const Field&, const FieldDefinition&>> Values;
-
 			virtual void select(const std::vector<std::string>& cols, const std::string& table,const std::string &sql, const std::vector<std::shared_ptr<ValueHandler>>& values,
 				std::function<void(const Row&)>
 			) =0;
-			virtual void update(const Values&)=0;
-			virtual void insert(const Values&)=0;
 
 		protected:
 		private:
@@ -123,8 +119,6 @@ namespace SimpleORM
 
 				sqlite3_finalize(statement);
 			}
-			virtual void update(const Values&) override {};
-			virtual void insert(const Values&) override {};
 
 			SQLite(const SQLite&) =delete;
 			void operator=(const SQLite&)=delete;
