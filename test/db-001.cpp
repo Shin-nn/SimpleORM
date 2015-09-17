@@ -21,8 +21,8 @@ class User: public SimpleORM::Table<User>
 				const static SimpleORM::ParametricFieldDefinition<int> id;
 		};
 
-		SimpleORM::StringField name =  SimpleORM::StringField();
-		SimpleORM::StringField username =  SimpleORM::StringField();
+		SimpleORM::StringField name = SimpleORM::StringField();
+		SimpleORM::StringField username = SimpleORM::StringField();
 		SimpleORM::IntField id = SimpleORM::IntField();
 
 		virtual SimpleORM::Expression::Is<std::string> getPrimaryWhere()
@@ -30,7 +30,7 @@ class User: public SimpleORM::Table<User>
 			return Where::name == "TODO";//id.value();
 		};
 
-		const static std::vector<std::string> rows;
+		const static std::vector<std::string> collumns;
 
 		inline virtual void getFromDB(const SimpleORM::Row& row) override
 		{
@@ -49,8 +49,9 @@ class User: public SimpleORM::Table<User>
 		};
 };
 
-const std::vector<std::string> User::rows = std::vector<std::string>({"id","username"});
+const std::vector<std::string> User::collumns = std::vector<std::string>({"id","username"});
 const std::string User::TableName="Users";
+//                                                                     tablename, fieldname
 const SimpleORM::ParametricFieldDefinition<std::string> User::Where::name("name",TableName);
 const SimpleORM::ParametricFieldDefinition<std::string> User::Where::username("username",TableName);
 const SimpleORM::ParametricFieldDefinition<int> User::Where::id("id",TableName);

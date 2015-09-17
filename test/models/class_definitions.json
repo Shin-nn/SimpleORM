@@ -1,0 +1,23 @@
+{
+	"tableName":"Tabulka",
+	"fields":[
+		{
+			"varName":"ID",
+			"DBName":"DBID",
+			"type":{
+				"dtype":"Int",
+				"maxlen":5
+			},
+			"isNullable":true
+		},
+		{
+			"varName":"jmeno",
+			"DBName":"DBjmeno",
+			"type":{
+				"dtype":"String",
+				"maxlen":5
+			},
+			"isNullable":true
+		}
+	]
+}
