@@ -78,7 +78,7 @@ namespace SimpleORM
 
 			inline T value() const
 			{
-				return SimpleORM::Select<T>(connection,T::Where::id==val).first();
+				return SimpleORM::Select<T>(connection,T::Attribute::id==val).first();
 			}
 		protected:
 			int val=0;

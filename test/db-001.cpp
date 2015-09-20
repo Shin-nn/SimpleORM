@@ -15,7 +15,7 @@ class Login: public SimpleORM::Table<Login>
 
 		const static std::string TableName;
 
-		class Where
+		class Attribute
 		{
 			public:
 				const static SimpleORM::ParametricFieldDefinition<int> id;
@@ -31,7 +31,7 @@ class Login: public SimpleORM::Table<Login>
 
 		virtual SimpleORM::Expression::Is<int> getPrimaryWhere()
 		{
-			return Where::id == id.value();
+			return Attribute::id == id.value();
 		};
 
 		const static std::vector<std::string> collumns;
@@ -48,10 +48,10 @@ class Login: public SimpleORM::Table<Login>
 
 const std::vector<std::string> Login::collumns = std::vector<std::string>({"id","user","login","password"});
 const std::string Login::TableName="Logins";
-const SimpleORM::ParametricFieldDefinition<int> Login::Where::id("id",TableName);
-const SimpleORM::ReferenceFieldDefinition<User> Login::Where::user("user",TableName);
-const SimpleORM::ParametricFieldDefinition<std::string> Login::Where::login("login",TableName);
-const SimpleORM::ParametricFieldDefinition<std::string> Login::Where::password("password",TableName);
+const SimpleORM::ParametricFieldDefinition<int> Login::Attribute::id("id",TableName);
+const SimpleORM::ReferenceFieldDefinition<User> Login::Attribute::user("user",TableName);
+const SimpleORM::ParametricFieldDefinition<std::string> Login::Attribute::login("login",TableName);
+const SimpleORM::ParametricFieldDefinition<std::string> Login::Attribute::password("password",TableName);
 
 class User: public SimpleORM::Table<User>
 {
@@ -60,7 +60,7 @@ class User: public SimpleORM::Table<User>
 
 		const static std::string TableName;
 
-		class Where
+		class Attribute
 		{
 			public:
 				const static SimpleORM::ParametricFieldDefinition<std::string> username;
@@ -74,7 +74,7 @@ class User: public SimpleORM::Table<User>
 
 		virtual SimpleORM::Expression::Is<int> getPrimaryWhere()
 		{
-			return Where::id == id.value();
+			return Attribute::id == id.value();
 		};
 
 		const static std::vector<std::string> collumns;
@@ -90,8 +90,8 @@ class User: public SimpleORM::Table<User>
 const std::vector<std::string> User::collumns = std::vector<std::string>({"id","username"});
 const std::string User::TableName="Users";
 
-const SimpleORM::ParametricFieldDefinition<std::string> User::Where::username("username",TableName);
-const SimpleORM::ParametricFieldDefinition<int> User::Where::id("id",TableName);
+const SimpleORM::ParametricFieldDefinition<std::string> User::Attribute::username("username",TableName);
+const SimpleORM::ParametricFieldDefinition<int> User::Attribute::id("id",TableName);
 
 int main()
 {
@@ -104,12 +104,12 @@ int main()
 */
 
 	//SimpleORM::Result<User> queryResult=SimpleORM::Select<User> userSelection(*c,User::Where::name=="5");
-	SimpleORM::Select<User> userSelection(*c,User::Where::username=="default");
+	SimpleORM::Select<User> userSelection(*c,User::Attribute::username=="default");
 	User ret = userSelection.first();
 	std::cout << "name: " << ret.username << "\n";
 	std::cout << "id: " << ret.id << "\n"; 
 
-	SimpleORM::Select<Login> loginSelection(*c,Login::Where::user==ret);
+	SimpleORM::Select<Login> loginSelection(*c,Login::Attribute::user==ret);
 	Login login = loginSelection.first();
 	std::cout << "user: " << login.user.value().username.value() << "\n";
 	std::cout << "id: " << login.id<< "\n"; 
