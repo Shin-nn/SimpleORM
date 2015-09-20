@@ -69,10 +69,10 @@ namespace SimpleORM
 				return *this;
 			}
 			inline ReferenceField<T>& operator=(const T& _v) {
-				if(val!=_v.id)
+				if(val!=_v.id.value())
 					changed=1;
 
-				val=_v.id;
+				val=_v.id.value();
 				return *this;
 			}
 
