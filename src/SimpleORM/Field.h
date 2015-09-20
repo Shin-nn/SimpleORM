@@ -72,7 +72,7 @@ namespace SimpleORM
 				if(val!=_v.id)
 					changed=1;
 
-				val=_v;
+				val=_v.id;
 				return *this;
 			}
 
