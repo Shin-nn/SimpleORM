@@ -8,10 +8,10 @@
 
 class User;
 
-class Login: public SimpleORM::Table<Login>
+class Login: public SimpleORM::Model<Login>
 {
 	public:
-		Login(SimpleORM::Connection& c) : SimpleORM::Table<Login>(c),user(c) {}
+		Login(SimpleORM::Connection& c) : SimpleORM::Model<Login>(c),user(c) {}
 
 		const static std::string TableName;
 
@@ -53,10 +53,10 @@ const SimpleORM::ReferenceFieldDefinition<User> Login::Attribute::user("user",Ta
 const SimpleORM::ParametricFieldDefinition<std::string> Login::Attribute::login("login",TableName);
 const SimpleORM::ParametricFieldDefinition<std::string> Login::Attribute::password("password",TableName);
 
-class User: public SimpleORM::Table<User>
+class User: public SimpleORM::Model<User>
 {
 	public:
-		User(SimpleORM::Connection& c) : SimpleORM::Table<User>(c) {}
+		User(SimpleORM::Connection& c) : SimpleORM::Model<User>(c) {}
 
 		const static std::string TableName;
 

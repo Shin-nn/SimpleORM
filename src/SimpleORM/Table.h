@@ -9,13 +9,13 @@
 namespace SimpleORM
 {
 	template <typename T>
-	class Table
+	class Model
 	{
 		public:
-			Table(Connection &c):connection(c) {};
-			virtual ~Table() {}
+			Model(Connection &c):connection(c) {};
+			virtual ~Model() {}
 
-			inline virtual bool isInDatabase() { return 0; }
+			inline virtual bool isInDatabase() { return isInDB; }
 
 			//virtual Connection::Values getAllUpdates() = 0;
 
@@ -34,6 +34,7 @@ namespace SimpleORM
 */			};
 
 		protected:
+			bool isInDB = false;
 			Connection &connection;
 	};
 }
