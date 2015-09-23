@@ -2,6 +2,7 @@
 #include "SimpleORM/Field.h"
 #include "SimpleORM/Selection.h"
 #include "SimpleORM/Row.h"
+#include "SimpleORM/SQLite.h"
 
 #include <iostream>
 #include <string>
