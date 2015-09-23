@@ -1,4 +1,4 @@
-#ifndef QUERY_H_
-#define QUERY_H_
+#ifndef SIMPLEORM_QUERY_H_
+#define SIMPLEORM_QUERY_H_
 
 #endif

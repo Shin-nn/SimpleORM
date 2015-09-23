@@ -1,5 +1,5 @@
-#ifndef DB_TABLE_H_
-#define DB_TABLE_H_
+#ifndef SIMPLEORM_MODEL_H_
+#define SIMPLEORM_MODEL_H_
 
 #include <vector>
 

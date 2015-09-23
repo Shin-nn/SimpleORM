@@ -1,4 +1,4 @@
-#include "SimpleORM/Table.h"
+#include "SimpleORM/Model.h"
 #include "SimpleORM/Field.h"
 #include "SimpleORM/Selection.h"
 #include "SimpleORM/Row.h"

@@ -1,5 +1,5 @@
-#ifndef DB_CONNECTION_H
-#define DB_CONNECTION_H
+#ifndef SIMPLEORM_CONNECTION_H_
+#define SIMPLEORM_CONNECTION_H_
 
 #include "Exception.h"
 #include "Row.h"
