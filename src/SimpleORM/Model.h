@@ -37,6 +37,14 @@ namespace SimpleORM
 			bool isInDB = false;
 			Connection &connection;
 	};
+
+	template <typename T>
+	class CachedModel: public Model<T>
+	{
+		public:
+			CachedModel(Connection &c) : Model<T>(c) {}
+			virtual ~CachedModel() {}
+	};
 }
 
 #endif

@@ -1,6 +1,6 @@
 #include "SimpleORM/Model.h"
 #include "SimpleORM/Field.h"
-#include "SimpleORM/Selection.h"
+#include "SimpleORM/Select.h"
 #include "SimpleORM/Row.h"
 #include "SimpleORM/SQLite.h"
 
@@ -9,10 +9,10 @@
 
 class User;
 
-class Login: public SimpleORM::Model<Login>
+class Login: public SimpleORM::CachedModel<Login>
 {
 	public:
-		Login(SimpleORM::Connection& c) : SimpleORM::Model<Login>(c),user(c) {}
+		Login(SimpleORM::Connection& c) : SimpleORM::CachedModel<Login>(c),user(c) {}
 
 		const static std::string TableName;
 

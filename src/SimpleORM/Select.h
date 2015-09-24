@@ -1,5 +1,5 @@
-#ifndef SIMPLEORM_SELECTION_H_
-#define SIMPLEORM_SELECTION_H_
+#ifndef SIMPLEORM_SELECT_H_
+#define SIMPLEORM_SELECT_H_
 
 #include "Connection.h"
 #include "Expression.h"

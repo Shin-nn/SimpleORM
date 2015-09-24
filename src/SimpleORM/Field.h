@@ -3,7 +3,7 @@
 
 #include "Expression.h"
 #include "Connection.h"
-#include "Selection.h"
+#include "Select.h"
 
 #include <ostream>
 #include <iostream>
