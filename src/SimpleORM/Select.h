@@ -30,7 +30,8 @@ namespace SimpleORM
 					});
 				return tmp;
 			};
-			inline T first() { return select().at(0); }
+			inline T first() { return select().at(0); } // TODO: rewrite
+			inline size_t count() { return select().size(); } // TODO: rewrite
 		protected:
 			std::vector<std::shared_ptr<ValueHandler>> values;
 			std::string sql;

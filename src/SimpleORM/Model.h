@@ -17,21 +17,20 @@ namespace SimpleORM
 
 			inline virtual bool isInDatabase() { return isInDB; }
 
-			//virtual Connection::Values getAllUpdates() = 0;
+			virtual void getAllUpdates(std::vector<std::string>& cols,std::vector<std::shared_ptr<ValueHandler>>& values) = 0;
 
 			virtual void getFromDB(const Row&)=0;
 
-			inline virtual void save() final
+			virtual SimpleORM::Expression::Is<int> getPrimaryWhere() = 0;
+
+			inline virtual void save() =0;
+
+
+			inline virtual void remove() final
 			{
-/*				auto updates = getAllUpdates();
-				if(isInDatabase())
-				{
-					connection.update(updates);
-				}else
-				{
-					connection.insert(updates);
-				}
-*/			};
+				auto tmp =getPrimaryWhere();
+				connection.remove(T::TableName, tmp.sql(), tmp.values());
+			}
 
 		protected:
 			bool isInDB = false;

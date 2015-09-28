@@ -34,7 +34,10 @@ namespace SimpleORM
 			virtual void select(const std::vector<std::string>& cols, const std::string& table,const std::string &sql, const std::vector<std::shared_ptr<ValueHandler>>& values,
 				std::function<void(const Row&)>
 			) =0;
+			virtual long insert(const std::string& table, const std::vector<std::string>& cols,const std::vector<std::shared_ptr<ValueHandler>>& values) =0;
+			virtual void update(const std::string& table, const std::vector<std::string>& cols,const std::vector<std::shared_ptr<ValueHandler>>& values, const std::string &where,const std::vector<std::shared_ptr<ValueHandler>>& whereValues) =0;
 
+			virtual void remove(const std::string& table, const std::string &where,const std::vector<std::shared_ptr<ValueHandler>>& whereValues) =0;
 		protected:
 		private:
 	};

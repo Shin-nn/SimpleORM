@@ -8,6 +8,7 @@
 #include <functional>
 #include <memory>
 #include <vector>
+#include <sqlite3.h>
 
 namespace SimpleORM
 {
@@ -90,7 +91,106 @@ namespace SimpleORM
 				while(sqlite3_step(statement)==SQLITE_ROW)
 				{
 					r(row);
-					//TODO fetch
+				}
+
+				sqlite3_finalize(statement);
+			}
+
+			virtual long int insert(const std::string& table, const std::vector< std::string >& cols, const std::vector< std::shared_ptr< ValueHandler > >& values) override
+			{
+				std::string query ="INSERT INTO "+table+" (";
+				std::string queryTmp="";
+
+				for(auto a= cols.begin();a<cols.end();++a)
+				for(auto c=cols.begin();c<cols.end();++c)
+				{
+					query+=*c;
+					queryTmp+="?";
+					if(c+1 !=cols.end())
+					{
+						query+=",";
+						queryTmp+=",";
+					}
+				}
+				query+=") VALUES ("+queryTmp+")";
+
+				sqlite3_stmt *statement;
+				if(sqlite3_prepare(db,query.c_str(),query.length(),&statement,0) != SQLITE_OK)
+				{
+					throw SelectException(query+=": error "+std::string(sqlite3_errmsg(db)));
+				}
+				int counter=1;
+				for(const auto& val: values)
+				{
+					bind(val.get(),counter,statement);
+					counter++;
+				}
+
+				if(sqlite3_step(statement) != SQLITE_DONE)
+				{
+					sqlite3_finalize(statement);
+					throw SelectException(query+=": error "+std::string(sqlite3_errmsg(db)));
+				}
+
+				auto ret =sqlite3_last_insert_rowid(db);
+				sqlite3_finalize(statement);
+				return ret;
+
+			}
+
+			virtual void update(const std::string& table, const std::vector< std::string >& cols, const std::vector< std::shared_ptr< ValueHandler > >& values, const std::string& where, const std::vector< std::shared_ptr< ValueHandler > >& whereValues) override
+			{
+				std::string query ="UPDATE "+table+" SET ";
+
+				for( const auto& c: cols)
+					query+=c+"=?";
+				query+=" WHERE " + where;
+
+				sqlite3_stmt *statement;
+				if(sqlite3_prepare(db,query.c_str(),query.length(),&statement,0) != SQLITE_OK)
+				{
+					throw SelectException(query+=": error "+std::string(sqlite3_errmsg(db)));
+				}
+				int counter=1;
+				for(const auto& val: values)
+				{
+					bind(val.get(),counter,statement);
+					counter++;
+				}
+				for(const auto& val: whereValues)
+				{
+					bind(val.get(),counter,statement);
+					counter++;
+				}
+				if(sqlite3_step(statement) != SQLITE_DONE)
+				{
+					sqlite3_finalize(statement);
+					throw SelectException(query+=": error "+std::string(sqlite3_errmsg(db)));
+				}
+				sqlite3_finalize(statement);
+			}
+
+			inline virtual void remove(const std::string& table, const std::string& where, const std::vector< std::shared_ptr< ValueHandler > >& values)
+			{
+				std::string query = "DELETE FROM "+table+" WHERE "+where;
+
+				sqlite3_stmt *statement;
+				if(sqlite3_prepare(db,query.c_str(),query.length(),&statement,0) != SQLITE_OK)
+				{
+					throw SelectException(query+=": error "+std::string(sqlite3_errmsg(db)));
+				}
+
+				int counter=1;
+				for(const auto& val: values)
+				{
+					bind(val.get(),counter,statement);
+					counter++;
+				}
+
+				if(sqlite3_step(statement) != SQLITE_DONE)
+				{
+					sqlite3_finalize(statement);
+					throw SelectException(query+=": error "+std::string(sqlite3_errmsg(db)));
 				}
 
 				sqlite3_finalize(statement);
