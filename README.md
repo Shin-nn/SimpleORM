@@ -10,4 +10,4 @@
 * Implement other databases (MySQL)
 
 ## Tutorial
-* See [examples and tutorial](http://gitlab.ishin.cz/PhotoLab/SimpleORM/wikis) on the wiki.
+* See [examples and tutorial](http://gitlab.ishin.cz/PhotoLab/SimpleORM/wikis/home) on the wiki.
