@@ -74,6 +74,8 @@ namespace SimpleORM
 						colsStr+=", ";
 				}
 				std::string query ="SELECT "+colsStr+" FROM " + table + " WHERE "+sql;
+				logger->logSelect(query);
+
 				sqlite3_stmt *statement;
 				if(sqlite3_prepare(db,query.c_str(),query.length(),&statement,0) != SQLITE_OK)
 				{
@@ -114,6 +116,7 @@ namespace SimpleORM
 				}
 				query+=") VALUES ("+queryTmp+")";
 
+				logger->logInsert(query);
 				sqlite3_stmt *statement;
 				if(sqlite3_prepare(db,query.c_str(),query.length(),&statement,0) != SQLITE_OK)
 				{
@@ -146,6 +149,8 @@ namespace SimpleORM
 					query+=c+"=?";
 				query+=" WHERE " + where;
 
+
+				logger->logUpdate(query);
 				sqlite3_stmt *statement;
 				if(sqlite3_prepare(db,query.c_str(),query.length(),&statement,0) != SQLITE_OK)
 				{
@@ -174,6 +179,7 @@ namespace SimpleORM
 			{
 				std::string query = "DELETE FROM "+table+" WHERE "+where;
 
+				logger->logRemove(query);
 				sqlite3_stmt *statement;
 				if(sqlite3_prepare(db,query.c_str(),query.length(),&statement,0) != SQLITE_OK)
 				{

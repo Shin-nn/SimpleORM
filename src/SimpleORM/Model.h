@@ -25,7 +25,6 @@ namespace SimpleORM
 
 			inline virtual void save() =0;
 
-
 			inline virtual void remove() final
 			{
 				auto tmp =getPrimaryWhere();

@@ -4,6 +4,7 @@
 #include "Exception.h"
 #include "Row.h"
 #include "Value.h"
+#include "Logger.h"
 
 #include <string>
 #include <sqlite3.h> 
@@ -25,7 +26,7 @@ namespace SimpleORM
 	class Connection
 	{
 		public:
-			inline Connection() {};
+			inline Connection(std::shared_ptr<Logger> l = std::make_shared<SimpleLogger>()):logger(l) {};
 			inline virtual ~Connection() {}
 
 			Connection(const Connection&) =delete;
@@ -39,6 +40,7 @@ namespace SimpleORM
 
 			virtual void remove(const std::string& table, const std::string &where,const std::vector<std::shared_ptr<ValueHandler>>& whereValues) =0;
 		protected:
+			std::shared_ptr<Logger> logger;
 		private:
 	};
 }

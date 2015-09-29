@@ -4,6 +4,7 @@
 #include <cassert>
 #include <string>
 #include <iostream>
+#include <memory>
 
 int main()
 {
@@ -27,21 +28,21 @@ int main()
 		const auto& b=SimpleORM::Expression::Is<int>("id",5);
 		assert((a||b).sql() =="(name=?) OR (id=?)");
 		assert((a||b).values().size() ==2);
-/*		std::shared<SimpleORM::ValueHandler> h=((a||b).values().at(0);
-		assert(dynamic_cast<SimpleORM::Value<std::string>*>(h) !=nullptr);
-		std::cout <<dynamic_cast<SimpleORM::Value<std::string>*>(h)->value() << "\n";
-		assert(dynamic_cast<SimpleORM::Value<std::string>*>(h)->value()=="5");
-*/	}
+		std::shared_ptr<SimpleORM::ValueHandler> h=(a||b).values().at(0);
+		auto value = h.get();
+		assert(dynamic_cast<SimpleORM::Value<std::string>*>(value) !=nullptr);
+		assert(dynamic_cast<SimpleORM::Value<std::string>*>(value)->value()=="5");
+	}
 	{
 		const auto& a=SimpleORM::Expression::Is<std::string>("name","5");
 		const auto& b=SimpleORM::Expression::Is<int>("id",5);
 		assert((a && b).sql() =="(name=?) AND (id=?)");
 		assert((a && b).values().size() ==2);
-/*
- *W		SimpleORM::ValueHandler* h=(a||b).values().at(1).get();
-		assert(dynamic_cast<SimpleORM::Value<int>*>(h) !=nullptr);
-		assert(dynamic_cast<SimpleORM::Value<int>*>(h)->value()==5);
-*/	}
+		std::shared_ptr<SimpleORM::ValueHandler> h=(a||b).values().at(1);
+		auto tmp=h.get();
+		assert(dynamic_cast<SimpleORM::Value<int>*>(tmp) !=nullptr);
+		assert(dynamic_cast<SimpleORM::Value<int>*>(tmp)->value()==5);
+	}
 	{
 		assert((SimpleORM::Expression::Is<std::string>("name","5")||SimpleORM::Expression::Is<std::string>("id","5")).sql()== "(name=?) OR (id=?)");
 	}
