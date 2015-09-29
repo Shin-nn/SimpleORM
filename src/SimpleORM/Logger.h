@@ -36,5 +36,6 @@ namespace SimpleORM
 				std::cerr << sql << std::endl;
 			}
 	};
+
 }
 #endif

@@ -10,7 +10,7 @@ namespace SimpleORM
 	};
 
 	template<typename T>
-	class Value : public ValueHandler
+	class Value: public ValueHandler
 	{
 		public:
 			Value<T> (const T& _val) : val(_val) {}

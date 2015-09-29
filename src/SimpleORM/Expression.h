@@ -21,7 +21,7 @@ namespace SimpleORM
 		};
 
 		template<typename T>
-		class Is : public Expression
+		class Is: public Expression
 		{
 			public:
 				inline Is(const std::string& _field, const T& _value): field(_field),val(_value) {}
@@ -36,6 +36,43 @@ namespace SimpleORM
 			protected:
 				std::string field;
 				Value<T> val;
+		};
+
+		template<typename T>
+		class In: public Expression
+		{
+			public:
+				inline In(const std::string& _field, const std::vector<T>& _v): field(_field),_values(_v) {}
+				inline In(const std::string& _field, const std::initializer_list<T>& _v): field(_field),_values(_v) {}
+
+				inline virtual std::string sql() const override
+				{
+					std::string tmp=field+" IN (";
+
+					for(size_t counter=0; counter<_values.size(); counter++)
+					{
+						if(counter > 0)
+							tmp+=",?";
+						else
+							tmp+="?";
+
+					}
+
+					return tmp+")";
+				}
+				inline virtual std::vector<std::shared_ptr<ValueHandler>> values() const override
+				{
+					std::vector<std::shared_ptr<ValueHandler>> a;
+
+					for(const T& val: _values)
+						a.push_back(std::shared_ptr<ValueHandler>(new Value<T>(val)));
+
+					return a;
+				}
+
+			protected:
+				std::string field;
+				std::vector<T> _values;
 		};
 
 		class TwoExpression: public Expression
@@ -60,14 +97,14 @@ namespace SimpleORM
 				const Expression& r;
 		};
 
-		class OR : public TwoExpression
+		class OR: public TwoExpression
 		{
 			public:
 				inline OR(const Expression& _l, const Expression& _r): TwoExpression("OR",_l,_r) {}
 			protected:
 		};
 
-		class AND : public TwoExpression
+		class AND: public TwoExpression
 		{
 			public:
 				inline AND(const Expression& _l, const Expression& _r): TwoExpression("AND",_l,_r) {}

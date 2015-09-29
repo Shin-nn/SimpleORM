@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <memory>
+#include <vector>
 
 int main()
 {
@@ -45,5 +46,11 @@ int main()
 	}
 	{
 		assert((SimpleORM::Expression::Is<std::string>("name","5")||SimpleORM::Expression::Is<std::string>("id","5")).sql()== "(name=?) OR (id=?)");
+	}
+	{
+		assert(SimpleORM::Expression::In<std::string>("name",std::vector<std::string>({"5","6"})).sql() == "name IN (?,?)");
+	}
+	{
+		assert(SimpleORM::Expression::In<std::string>("name",{"5","6","7"}).sql() == "name IN (?,?,?)");
 	}
 }
