@@ -29,6 +29,8 @@ namespace SimpleORM
 			inline Connection(std::shared_ptr<Logger> l = std::make_shared<SimpleLogger>()):logger(l) {};
 			inline virtual ~Connection() {}
 
+			inline std::shared_ptr<Logger> changeLogger(std::shared_ptr<Logger> l) { auto tmp =logger; logger=l; return tmp; }
+
 			Connection(const Connection&) =delete;
 			void operator=(const Connection&) =delete;
 
@@ -46,3 +48,5 @@ namespace SimpleORM
 }
 
 #endif
+
+
