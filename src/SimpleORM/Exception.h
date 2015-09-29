@@ -9,12 +9,11 @@ namespace SimpleORM
 	class SelectException:public std::exception
 	{
 		public:
-			SelectException(const std::string & _str) : str(_str.c_str()) {}
-			SelectException(const char* _str) : str(_str) {}
-
+			SelectException(const char* _str): str(_str) {}
+			SelectException(const std::string& _str): SelectException(_str.c_str()) {}
 			SelectException(const SelectException& r): str(r.str) {}
 
-			SelectException& operator=(const SelectException& r){ str=r.str; return *this; }
+			SelectException& operator=(const SelectException& r) { str=r.str; return *this; }
 
 			virtual ~SelectException() {}
 

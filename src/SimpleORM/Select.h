@@ -17,17 +17,19 @@ namespace SimpleORM
 	class Select
 	{
 		public:
-			Select<T> (Connection &c,const Expression::Expression &where): values(where.values()),sql(where.sql()), tableName(T::TableName),connection(c)
+			Select<T> (Connection& c,const Expression::Expression& where): values(where.values()),sql(where.sql()), tableName(T::TableName),connection(c)
 			{
 			}
 
-			Set<T> select() {
+			Set<T> select()
+			{
 				Set<T> tmp;
-				connection.select(T::collumns,T::TableName,sql,values,[&tmp,this](const Row&r){
+				connection.select(T::collumns,T::TableName,sql,values,[&tmp,this](const Row&r)
+				{
 					T tt(connection);
 					tt.getFromDB(r);
 					tmp.push_back(tt);
-					});
+				});
 				return tmp;
 			};
 			inline T first() { return select().at(0); } // TODO: rewrite
@@ -36,9 +38,10 @@ namespace SimpleORM
 			std::vector<std::shared_ptr<ValueHandler>> values;
 			std::string sql;
 			const std::string& tableName;
-			Connection &connection;
+			Connection& connection;
 
 	};
 }
 
 #endif
+

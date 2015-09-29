@@ -4,6 +4,8 @@
 #include "SimpleORM/Row.h"
 #include "SimpleORM/SQLite.h"
 
+#include "SimpleORM/TerminalLogger.h"
+
 #include <iostream>
 #include <string>
 
@@ -59,7 +61,8 @@ class User: public SimpleORM::Model<User>
 			{
 				auto tmp =this->getPrimaryWhere();
 				connection.update(TableName,cols,values,tmp.sql(),tmp.values());
-			}else
+			}
+			else
 			{
 				auto _id= connection.insert(TableName,cols,values);
 				this->id=_id;
@@ -119,11 +122,13 @@ class Login: public SimpleORM::CachedModel<Login>
 				cols.push_back("user");
 				values.push_back(std::shared_ptr<SimpleORM::ValueHandler>(new SimpleORM::Value<int>(user.value().id.value())));
 			}
+
 			if(login.isChanged())
 			{
 				cols.push_back("login");
 				values.push_back(std::shared_ptr<SimpleORM::ValueHandler>(new SimpleORM::Value<std::string>(login.value())));
 			}
+
 			if(password.isChanged())
 			{
 				cols.push_back("password");
@@ -140,7 +145,8 @@ class Login: public SimpleORM::CachedModel<Login>
 			{
 				auto tmp =this->getPrimaryWhere();
 				connection.update(TableName,cols,values,tmp.sql(),tmp.values());
-			}else
+			}
+			else
 			{
 				auto _id= connection.insert(TableName,cols,values);
 				this->id=_id;
@@ -159,36 +165,39 @@ const SimpleORM::ParametricFieldDefinition<std::string> Login::Attribute::passwo
 
 int main()
 {
-	SimpleORM::Connection *c= new SimpleORM::SQLite("./db-001.db");
+	SimpleORM::Connection* c= new SimpleORM::SQLite("./db-001.db");
 
-/*
- *	User newUser(*c);
-	newUser.name=std::string("newUser");
-	newUser.save();
-*/
+	c->changeLogger(std::make_shared<SimpleORM::TerminalLogger>());
+
+	/*
+	 *	User newUser(*c);
+		newUser.name=std::string("newUser");
+		newUser.save();
+	*/
 
 	//SimpleORM::Result<User> queryResult=SimpleORM::Select<User> userSelection(*c,User::Where::name=="5");
 	SimpleORM::Select<User> userSelection(*c,User::Attribute::username=="default");
 	User ret = userSelection.first();
 	std::cout << "name: " << ret.username << "\n";
-	std::cout << "id: " << ret.id << "\n"; 
+	std::cout << "id: " << ret.id << "\n";
 
 	SimpleORM::Select<Login> loginSelection(*c,Login::Attribute::user==ret);
 	Login login = loginSelection.first();
 	std::cout << "user: " << login.user.value().username.value() << "\n";
-	std::cout << "id: " << login.id<< "\n"; 
-	
+	std::cout << "id: " << login.id<< "\n";
 
-//	std::cout << s.toStr();
+
+	//	std::cout << s.toStr();
 
 	//userSelection.where();
 	//std::vector<User> users =userSelection.get();
 
-	
-//.w	here(U::name=="5");
+
+	//.w	here(U::name=="5");
 
 	{
 		SimpleORM::Select<User> userSelection2(*c,User::Attribute::username=="newName2");
+
 		if(userSelection2.count() > 0)
 		{
 			userSelection2.first().remove();
@@ -196,6 +205,7 @@ int main()
 	}
 	{
 		SimpleORM::Select<User> userSelection2(*c,User::Attribute::username=="newName");
+
 		if(userSelection2.count() > 0)
 		{
 			userSelection2.first().remove();
@@ -211,12 +221,12 @@ int main()
 	test.save();
 
 	{
-	SimpleORM::Select<User> userSelection2(*c,User::Attribute::username=="newName");
-	std::cout << "\n count: " << userSelection2.count() << std::endl;
+		SimpleORM::Select<User> userSelection2(*c,User::Attribute::username=="newName");
+		std::cout << "\n count: " << userSelection2.count() << std::endl;
 	}
 	{
-	SimpleORM::Select<User> userSelection2(*c,User::Attribute::username=="newName2");
-	std::cout << "\n count: " << userSelection2.count() << std::endl;
+		SimpleORM::Select<User> userSelection2(*c,User::Attribute::username=="newName2");
+		std::cout << "\n count: " << userSelection2.count() << std::endl;
 	}
 	delete c;
 }

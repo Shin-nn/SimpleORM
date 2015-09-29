@@ -10,9 +10,10 @@
 
 namespace SimpleORM
 {
-namespace Expression
-{
-		class Expression {
+	namespace Expression
+	{
+		class Expression
+		{
 			public:
 				virtual std::string sql() const { return "1=1"; }
 				virtual std::vector<std::shared_ptr<ValueHandler>> values() const { return std::vector<std::shared_ptr<ValueHandler>>(); };
@@ -24,8 +25,9 @@ namespace Expression
 		{
 			public:
 				inline Is(const std::string& _field, const T& _value): field(_field),val(_value) {}
-				inline virtual std::string sql() const override{ return field+"=?"; }
-				inline virtual std::vector<std::shared_ptr<ValueHandler>> values() const override {
+				inline virtual std::string sql() const override { return field+"=?"; }
+				inline virtual std::vector<std::shared_ptr<ValueHandler>> values() const override
+				{
 					std::vector<std::shared_ptr<ValueHandler>> a;
 					a.push_back(std::shared_ptr<ValueHandler>(new Value<T>(val)));
 					return a;
@@ -39,14 +41,17 @@ namespace Expression
 		class TwoExpression: public Expression
 		{
 			public:
-				inline TwoExpression(const std::string &_op,const Expression& _l, const Expression& _r):Expression(), op(_op), l(_l), r(_r) {}
+				inline TwoExpression(const std::string& _op,const Expression& _l, const Expression& _r):Expression(), op(_op), l(_l), r(_r) {}
 				inline virtual std::string sql() const override { return "("+l.sql()+") "+op+" ("+(&r)->sql()+")"; }
-				inline virtual std::vector<std::shared_ptr<ValueHandler>> values() const override {
+				inline virtual std::vector<std::shared_ptr<ValueHandler>> values() const override
+				{
 					std::vector<std::shared_ptr<ValueHandler>> tmp =l.values();
+
 					for(const auto& a: r.values())
 					{
 						tmp.push_back(a);
 					}
+
 					return tmp;
 				}
 			protected:
@@ -73,8 +78,8 @@ namespace Expression
 
 		inline AND operator&&(const Expression& l, const Expression& r) { return SimpleORM::Expression::AND(l,r); }
 
-		inline std::ostream & operator<<(std::ostream& os, const Expression& l) { os<< l.sql(); return os; }
-}
+		inline std::ostream& operator<<(std::ostream& os, const Expression& l) { os<< l.sql(); return os; }
+	}
 }
 
 #endif

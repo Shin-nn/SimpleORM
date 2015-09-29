@@ -24,7 +24,8 @@ namespace SimpleORM
 	class ParametricField : public Field
 	{
 		public:
-			inline ParametricField& operator=(const T& _v) {
+			inline ParametricField& operator=(const T& _v)
+			{
 				if(val!=_v)
 					changed=1;
 
@@ -40,7 +41,7 @@ namespace SimpleORM
 	};
 
 	template <typename T>
-	std::ostream & operator<<(std::ostream& os, const ParametricField<T> &o) { os<< o.value(); return os; }
+	std::ostream& operator<<(std::ostream& os, const ParametricField<T>& o) { os<< o.value(); return os; }
 
 	class StringField: public ParametricField<std::string>
 	{
@@ -60,15 +61,17 @@ namespace SimpleORM
 	class ReferenceField: public Field
 	{
 		public:
-			ReferenceField<T>(Connection &c):connection(c) {}
-			inline ReferenceField<T>& operator=(int _v) {
+			ReferenceField<T>(Connection& c):connection(c) {}
+			inline ReferenceField<T>& operator=(int _v)
+			{
 				if(val!=_v)
 					changed=1;
 
 				val=_v;
 				return *this;
 			}
-			inline ReferenceField<T>& operator=(const T& _v) {
+			inline ReferenceField<T>& operator=(const T& _v)
+			{
 				if(val!=_v.id.value())
 					changed=1;
 
@@ -82,13 +85,13 @@ namespace SimpleORM
 			}
 		protected:
 			int val=0;
-			Connection &connection;
+			Connection& connection;
 	};
 
 	class FieldDefinition
 	{
 		public:
-			FieldDefinition(const std::string& tn, const std::string &fn) : tableName(tn), fieldName(fn) {}
+			FieldDefinition(const std::string& tn, const std::string& fn) : tableName(tn), fieldName(fn) {}
 		protected:
 			std::string tableName;
 			std::string fieldName;
