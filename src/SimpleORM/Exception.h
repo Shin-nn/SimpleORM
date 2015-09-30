@@ -11,7 +11,7 @@ namespace SimpleORM
 		public:
 			SelectException(const char* _str): str(_str) {}
 			SelectException(const std::string& _str): SelectException(_str.c_str()) {}
-			SelectException(const SelectException& r): str(r.str) {}
+			SelectException(const SelectException& r): SelectException(r.str) {}
 
 			SelectException& operator=(const SelectException& r) { str=r.str; return *this; }
 

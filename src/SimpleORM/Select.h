@@ -34,6 +34,9 @@ namespace SimpleORM
 			};
 			inline T first() { return select().at(0); } // TODO: rewrite
 			inline size_t count() { return select().size(); } // TODO: rewrite
+
+			inline const std::string& getSQL() const { return sql; }
+			inline const std::vector<std::shared_ptr<ValueHandler>>& getValues() const { return values; }
 		protected:
 			std::vector<std::shared_ptr<ValueHandler>> values;
 			std::string sql;

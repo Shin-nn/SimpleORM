@@ -169,6 +169,12 @@ int main()
 
 	c->changeLogger(std::make_shared<SimpleORM::TerminalLogger>());
 
+	{
+		SimpleORM::Select<User> userSelection(*c,User::Attribute::username=="default");
+		SimpleORM::Select<Login> loginSelection(*c,Login::Attribute::user.in(userSelection));
+		loginSelection.first();
+	}
+
 	/*
 	 *	User newUser(*c);
 		newUser.name=std::string("newUser");

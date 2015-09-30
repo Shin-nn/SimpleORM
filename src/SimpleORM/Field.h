@@ -114,6 +114,7 @@ namespace SimpleORM
 			inline ReferenceFieldDefinition<T>(const std::string& _fieldName, const std::string& _tableName) : FieldDefinition(_tableName,_fieldName) {}
 
 			Expression::Is<int> operator==(const T& is) const { return Expression::Is<int>(this->fieldName,is.id.value()); }
+			Expression::InQuery<T> in(const Select<T>& s) const { return Expression::InQuery<T>(this->fieldName,s.getSQL(),s.getValues()); }
 		private:
 	};
 }

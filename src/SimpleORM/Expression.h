@@ -75,6 +75,28 @@ namespace SimpleORM
 				std::vector<T> _values;
 		};
 
+		template<typename T>
+		class InQuery: public Expression
+		{
+			public:
+				inline InQuery(const std::string& _field, const std::string& _expr, const std::vector<std::shared_ptr<ValueHandler>>& _val): field(_field), expr(_expr), val(_val) {}
+
+				inline virtual std::string sql() const override
+				{
+					return field+" IN ( SELECT id FROM "+T::TableName+" WHERE " +expr+")";
+				}
+
+				inline virtual std::vector<std::shared_ptr<ValueHandler>> values() const override
+				{
+					return val;
+				}
+
+			protected:
+				std::string field;
+				std::string expr;
+				std::vector<std::shared_ptr<ValueHandler>> val;
+		};
+
 		class TwoExpression: public Expression
 		{
 			public:

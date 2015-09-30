@@ -53,4 +53,7 @@ int main()
 	{
 		assert(SimpleORM::Expression::In<std::string>("name",{"5","6","7"}).sql() == "name IN (?,?,?)");
 	}
+	{
+		assert(SimpleORM::Expression::In<int>("name",{1,2,3,4}).sql() == "name IN (?,?,?,?)");
+	}
 }
