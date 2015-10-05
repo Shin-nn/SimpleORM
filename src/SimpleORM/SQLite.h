@@ -112,18 +112,17 @@ namespace SimpleORM
 				std::string query ="INSERT INTO "+table+" (";
 				std::string queryTmp="";
 
-				for(auto a= cols.begin(); a<cols.end(); ++a)
-					for(auto c=cols.begin(); c<cols.end(); ++c)
-					{
-						query+=*c;
-						queryTmp+="?";
+				for(auto c=cols.begin(); c<cols.end(); ++c)
+				{
+					query+=*c;
+					queryTmp+="?";
 
-						if(c+1 !=cols.end())
-						{
-							query+=",";
-							queryTmp+=",";
-						}
+					if(c+1 !=cols.end())
+					{
+						query+=",";
+						queryTmp+=",";
 					}
+				}
 
 				query+=") VALUES ("+queryTmp+")";
 
