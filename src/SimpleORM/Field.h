@@ -92,6 +92,8 @@ namespace SimpleORM
 	{
 		public:
 			FieldDefinition(const std::string& tn, const std::string& fn) : tableName(tn), fieldName(fn) {}
+
+			Expression::IsNull operator==(std::nullptr_t) const { return Expression::IsNull(this->fieldName); }
 		protected:
 			std::string tableName;
 			std::string fieldName;
@@ -103,6 +105,7 @@ namespace SimpleORM
 		public:
 			inline ParametricFieldDefinition<T>(const std::string& _fieldName, const std::string& _tableName) : FieldDefinition(_tableName,_fieldName) {}
 
+			using FieldDefinition::operator==;
 			Expression::Is<T> operator==(const T& is) const { return Expression::Is<T>(this->fieldName,is); }
 		private:
 	};
@@ -113,6 +116,7 @@ namespace SimpleORM
 		public:
 			inline ReferenceFieldDefinition<T>(const std::string& _fieldName, const std::string& _tableName) : FieldDefinition(_tableName,_fieldName) {}
 
+			using FieldDefinition::operator==;
 			Expression::Is<int> operator==(const T& is) const { return Expression::Is<int>(this->fieldName,is.id.value()); }
 			Expression::InQuery<T> in(const Select<T>& s) const { return Expression::InQuery<T>(this->fieldName,s.getSQL(),s.getValues()); }
 		private:

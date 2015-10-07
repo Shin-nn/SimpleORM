@@ -10,6 +10,7 @@
 
 namespace SimpleORM
 {
+
 	namespace Expression
 	{
 		class Expression
@@ -36,6 +37,20 @@ namespace SimpleORM
 			protected:
 				std::string field;
 				Value<T> val;
+		};
+
+		class IsNull: public Expression
+		{
+			public:
+				inline IsNull(const std::string& _field): field(_field) {}
+				inline virtual std::string sql() const override { return field+" IS NULL"; }
+				inline virtual std::vector<std::shared_ptr<ValueHandler>> values() const override
+				{
+					return std::vector<std::shared_ptr<ValueHandler>>();
+				}
+
+			protected:
+				std::string field;
 		};
 
 		template<typename T>
@@ -79,7 +94,8 @@ namespace SimpleORM
 		class InQuery: public Expression
 		{
 			public:
-				inline InQuery(const std::string& _field, const std::string& _expr, const std::vector<std::shared_ptr<ValueHandler>>& _val): field(_field), expr(_expr), val(_val) {}
+				inline InQuery(const std::string& _field, const std::string& _expr, const std::vector<std::shared_ptr<ValueHandler>>& _val): field(_field), expr(_expr),
+					val(_val) {}
 
 				inline virtual std::string sql() const override
 				{
@@ -142,3 +158,4 @@ namespace SimpleORM
 }
 
 #endif
+
